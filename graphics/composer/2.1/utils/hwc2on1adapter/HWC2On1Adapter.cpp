@@ -269,6 +269,10 @@ hwc2_function_pointer_t HWC2On1Adapter::doGetFunction(
         case FunctionDescriptor::SetLayerBlendMode:
             return asFP<HWC2_PFN_SET_LAYER_BLEND_MODE>(
                     setLayerBlendModeHook);
+        case FunctionDescriptor::SetLayerName:
+            return asFP<HWC2_PFN_SET_LAYER_NAME>(
+                    layerHook<decltype(&Layer::setName),
+                    &Layer::setName, const char *>);
         case FunctionDescriptor::SetLayerColor:
             return asFP<HWC2_PFN_SET_LAYER_COLOR>(
                     layerHook<decltype(&Layer::setColor), &Layer::setColor,
@@ -1950,6 +1954,8 @@ Error HWC2On1Adapter::Layer::setCursorPosition(int32_t x, int32_t y) {
 }
 
 Error HWC2On1Adapter::Layer::setSurfaceDamage(hwc_region_t damage) {
+  ALOGW("=== HWC2On1Adapter::Layer::setSurfaceDamage");
+
     // HWC1 supports surface damage starting only with version 1.5.
     if (mDisplay.getDevice().mHwc1MinorVersion < 5) {
         return Error::None;
@@ -1963,6 +1969,14 @@ Error HWC2On1Adapter::Layer::setSurfaceDamage(hwc_region_t damage) {
 
 Error HWC2On1Adapter::Layer::setBlendMode(BlendMode mode) {
     mBlendMode = mode;
+    mDisplay.markGeometryChanged();
+    return Error::None;
+}
+
+Error HWC2On1Adapter::Layer::setName(const char *name) {
+  ALOGW("=== HWC2On1Adapter::Layer::setName %s", name);
+  strncpy(mName, name, sizeof(mName));
+
     mDisplay.markGeometryChanged();
     return Error::None;
 }
@@ -2053,6 +2067,9 @@ void HWC2On1Adapter::Layer::applyState(hwc_layer_1_t& hwc1Layer) {
         case Composition::Sideband : applySidebandState(hwc1Layer); break;
         default: applyBufferState(hwc1Layer); break;
     }
+
+    //HWC_LAYER_NAME_MAX_LENGTH
+    strcpy(hwc1Layer.name, mName);
 }
 
 static std::string regionStrings(const std::vector<hwc_rect_t>& visibleRegion,

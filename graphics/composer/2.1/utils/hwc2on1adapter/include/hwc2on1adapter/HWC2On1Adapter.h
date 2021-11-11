@@ -538,6 +538,7 @@ private:
 
             // HWC2 Layer state functions
             HWC2::Error setBlendMode(HWC2::BlendMode mode);
+            HWC2::Error setName(const char *name);
             HWC2::Error setColor(hwc_color_t color);
             HWC2::Error setCompositionType(HWC2::Composition type);
             HWC2::Error setDataspace(android_dataspace_t dataspace);
@@ -598,6 +599,7 @@ private:
             hwc_frect_t mSourceCrop;
             HWC2::Transform mTransform;
             std::vector<hwc_rect_t> mVisibleRegion;
+            char mName[HWC_LAYER_NAME_MAX_LENGTH];
 
             uint32_t mZ;
 

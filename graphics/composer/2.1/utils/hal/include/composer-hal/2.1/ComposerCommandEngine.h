@@ -51,6 +51,7 @@ class ComposerCommandEngine : protected CommandReaderBase {
     Error execute(uint32_t inLength, const hidl_vec<hidl_handle>& inHandles, bool* outQueueChanged,
                   uint32_t* outCommandLength, hidl_vec<hidl_handle>* outCommandHandles) {
         if (!readQueue(inLength, inHandles)) {
+          ALOGW("==== executeCommand error::BAD_PARAMETER");
             return Error::BAD_PARAMETER;
         }
 
@@ -115,6 +116,8 @@ class ComposerCommandEngine : protected CommandReaderBase {
                 return executeSetLayerSurfaceDamage(length);
             case IComposerClient::Command::SET_LAYER_BLEND_MODE:
                 return executeSetLayerBlendMode(length);
+            case IComposerClient::Command::SET_LAYER_NAME:
+                return executeSetLayerName(length);
             case IComposerClient::Command::SET_LAYER_COLOR:
                 return executeSetLayerColor(length);
             case IComposerClient::Command::SET_LAYER_COMPOSITION_TYPE:
@@ -405,6 +408,25 @@ class ComposerCommandEngine : protected CommandReaderBase {
         }
 
         auto err = mHal->setLayerBlendMode(mCurrentDisplay, mCurrentLayer, readSigned());
+        if (err != Error::NONE) {
+            mWriter.setError(getCommandLoc(), err);
+        }
+
+        return true;
+    }
+
+    bool executeSetLayerName(uint16_t length) {
+      ALOGW("executeSetLayerName length %" PRIu16, length);
+
+        if (length ==0) {
+          return false;
+        }
+
+        char name[HWC_LAYER_NAME_MAX_LENGTH];
+        readBuffer(name, length);
+        ALOGW("executeSetLayerName name %s", name);
+
+        auto err = mHal->setLayerName(mCurrentDisplay, mCurrentLayer, name);
         if (err != Error::NONE) {
             mWriter.setError(getCommandLoc(), err);
         }

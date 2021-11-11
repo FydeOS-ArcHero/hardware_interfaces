@@ -116,6 +116,7 @@ class ComposerHal {
     virtual Error setLayerSurfaceDamage(Display display, Layer layer,
                                         const std::vector<hwc_rect_t>& damage) = 0;
     virtual Error setLayerBlendMode(Display display, Layer layer, int32_t mode) = 0;
+    virtual Error setLayerName(Display display, Layer layer, const char *name) = 0;
     virtual Error setLayerColor(Display display, Layer layer, IComposerClient::Color color) = 0;
     virtual Error setLayerCompositionType(Display display, Layer layer, int32_t type) = 0;
     virtual Error setLayerDataspace(Display display, Layer layer, int32_t dataspace) = 0;

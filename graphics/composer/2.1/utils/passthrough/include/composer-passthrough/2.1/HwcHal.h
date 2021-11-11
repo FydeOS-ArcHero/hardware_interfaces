@@ -438,6 +438,13 @@ class HwcHalImpl : public Hal {
         return static_cast<Error>(err);
     }
 
+    Error setLayerName(Display display, Layer layer, const char *name) override {
+        ALOGE("=== HWCHAL setLayerName %s %p", name, mDispatch.setLayerName);
+
+        int32_t err = mDispatch.setLayerName(mDevice, display, layer, name);
+        return static_cast<Error>(err);
+    }
+
     Error setLayerColor(Display display, Layer layer, IComposerClient::Color color) override {
         hwc_color_t hwc_color{color.r, color.g, color.b, color.a};
         int32_t err = mDispatch.setLayerColor(mDevice, display, layer, hwc_color);
@@ -550,6 +557,7 @@ class HwcHalImpl : public Hal {
             !initDispatch(HWC2_FUNCTION_SET_COLOR_TRANSFORM, &mDispatch.setColorTransform) ||
             !initDispatch(HWC2_FUNCTION_SET_CURSOR_POSITION, &mDispatch.setCursorPosition) ||
             !initDispatch(HWC2_FUNCTION_SET_LAYER_BLEND_MODE, &mDispatch.setLayerBlendMode) ||
+            !initDispatch(HWC2_FUNCTION_SET_LAYER_NAME, &mDispatch.setLayerName) ||
             !initDispatch(HWC2_FUNCTION_SET_LAYER_BUFFER, &mDispatch.setLayerBuffer) ||
             !initDispatch(HWC2_FUNCTION_SET_LAYER_COLOR, &mDispatch.setLayerColor) ||
             !initDispatch(HWC2_FUNCTION_SET_LAYER_COMPOSITION_TYPE,
@@ -635,6 +643,7 @@ class HwcHalImpl : public Hal {
         HWC2_PFN_SET_COLOR_TRANSFORM setColorTransform;
         HWC2_PFN_SET_CURSOR_POSITION setCursorPosition;
         HWC2_PFN_SET_LAYER_BLEND_MODE setLayerBlendMode;
+        HWC2_PFN_SET_LAYER_NAME setLayerName;
         HWC2_PFN_SET_LAYER_BUFFER setLayerBuffer;
         HWC2_PFN_SET_LAYER_COLOR setLayerColor;
         HWC2_PFN_SET_LAYER_COMPOSITION_TYPE setLayerCompositionType;

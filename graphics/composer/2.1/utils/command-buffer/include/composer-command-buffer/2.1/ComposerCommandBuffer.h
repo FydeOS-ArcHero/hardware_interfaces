@@ -324,6 +324,20 @@ class CommandWriterBase {
         endCommand();
     }
 
+    // static constexpr uint16_t kSetLayerNameLength = 2;
+    void setLayerName(const char *name, size_t length) {
+        size_t s = (length - 1) / 4 + 1;
+
+        ALOGW("==== composercommonbuffer setLayerName %s %zu %zu", name, length, s);
+
+        beginCommand(IComposerClient::Command::SET_LAYER_NAME, s);
+
+        memcpy(&mData[mDataWritten], name, length);
+        mDataWritten += s;
+
+        endCommand();
+    }
+
     static constexpr uint16_t kSetLayerColorLength = 1;
     void setLayerColor(IComposerClient::Color color) {
         beginCommand(IComposerClient::Command::SET_LAYER_COLOR, kSetLayerColorLength);
@@ -672,6 +686,12 @@ class CommandReaderBase {
         int32_t val;
         memcpy(&val, &mData[mDataRead++], sizeof(val));
         return val;
+    }
+
+    void readBuffer(char *buffer, int size) {
+      memcpy(buffer, &mData[mDataRead], size * 4);
+
+      mDataRead += size;
     }
 
     float readFloat() {

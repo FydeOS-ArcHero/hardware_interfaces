@@ -606,6 +606,8 @@ hwc2_function_pointer_t getFunctionHook(hwc2_device_t* /*device*/, int32_t descr
             return asFP<HWC2_PFN_SET_LAYER_COMPOSITION_TYPE>(setLayerCompositionTypeHook);
         case HWC2_FUNCTION_SET_LAYER_BLEND_MODE:
             return asFP<HWC2_PFN_SET_LAYER_BLEND_MODE>(setLayerStateHook<int32_t>);
+        case HWC2_FUNCTION_SET_LAYER_NAME:
+            return asFP<HWC2_PFN_SET_LAYER_NAME>(setLayerStateHook<const char *>);
         case HWC2_FUNCTION_SET_LAYER_COLOR:
             return asFP<HWC2_PFN_SET_LAYER_COLOR>(setLayerStateHook<hwc_color_t>);
         case HWC2_FUNCTION_SET_LAYER_DATASPACE:
