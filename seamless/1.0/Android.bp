@@ -1,0 +1,16 @@
+hidl_interface {
+    name: "android.hardware.seamless@1.0",
+    root: "android.hardware",
+    vndk: {
+        enabled: true,
+    },
+    srcs: [
+        "ISeamless.hal",
+    ],
+    interfaces: [
+        "android.hidl.base@1.0",
+    ],
+    types: [
+    ],
+    gen_java: true,
+}
